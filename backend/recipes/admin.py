@@ -60,7 +60,6 @@ class FollowAdmin(admin.ModelAdmin):
     empty_value_display = EMPTY_VALUE
 
 
-
 @admin.register(ShoppingList)
 class ShoppingListAdmin(admin.ModelAdmin):
     """ Админ панель списка покупок """
