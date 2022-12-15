@@ -13,7 +13,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1',
                  'localhost',
-                 'backend', ]
+                 'backend',
+                 '158.160.55.155']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -27,9 +28,10 @@ INSTALLED_APPS = [
     'djoser',
     'drf_yasg',
     'django_filters',
-    "recipes.apps.RecipesConfig",
-    "users.apps.UsersConfig",
-    "api.apps.ApiConfig",
+    'recipes.apps.RecipesConfig',
+    'users.apps.UsersConfig',
+    'api.apps.ApiConfig',
+    'colorfield',
 ]
 
 MIDDLEWARE = [

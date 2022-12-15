@@ -1,8 +1,10 @@
-from django.db import models
 from django.contrib.auth import get_user_model
-from django.db.models import DateTimeField
 from django.core.validators import MinValueValidator
+from django.db import models
+from django.db.models import DateTimeField
 from django.db.models.deletion import CASCADE
+
+from colorfield.fields import ColorField
 
 User = get_user_model()
 
@@ -15,7 +17,8 @@ class Tag(models.Model):
         verbose_name='Тег',
         help_text='Введите тег',
     )
-    color = models.CharField(
+    color = ColorField(
+        format='hex',
         max_length=7,
         unique=True,
         verbose_name='Цвет тега HEX',
@@ -79,7 +82,7 @@ class Recipe(models.Model):
         help_text='Перечислите ингредиенты',)
     tags = models.ManyToManyField(
         related_name='recipes',
-        to='Tag',
+        to=Tag,
         verbose_name='Теги',
         help_text='Здесь теги',)
     cooking_time = models.IntegerField(validators=[MinValueValidator(

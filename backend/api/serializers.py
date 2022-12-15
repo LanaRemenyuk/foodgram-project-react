@@ -1,9 +1,10 @@
+from django.db import transaction
+
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
+from recipes.models import (Favorite, Follow, Ingredient, IngredientContained,
+                            Recipe, ShoppingList, Tag)
 from rest_framework import serializers
-
-from recipes.models import (Favorite, Ingredient,
-                            IngredientContained, Recipe, ShoppingList, Tag, Follow)
 from users.models import CustomUser
 
 
@@ -27,13 +28,9 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         model = CustomUser
         fields = ('email', 'username', 'first_name', 'last_name', 'password')
 
+    @transaction.atomic
     def create(self, validated_data):
-        user = CustomUser(
-            email=validated_data['email'],
-            username=validated_data['username'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-        )
+        user = super(CustomUserCreateSerializer, self).create(validated_data)
         user.set_password(validated_data['password'])
         user.save()
         return user
@@ -165,6 +162,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         for tag in tags:
             recipe.tags.add(tag)
 
+    @transaction.atomic
     def create(self, validated_data):
         author = self.context.get('request').user
         tags = validated_data.pop('tags')
@@ -177,6 +175,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         return representation(self.context, instance, RecipeSerializer)
 
+    @transaction.atomic
     def update(self, recipe, validated_data):
         recipe.tags.clear()
         IngredientContained.objects.filter(recipe=recipe).delete()
