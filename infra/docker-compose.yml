@@ -4,19 +4,27 @@ services:
   db:
     image: postgres:13-alpine
     restart: always
+    container_name: db
     volumes:
       - db_value:/var/lib/postgresql/data/
     env_file:
       - ./.env
 
   backend:
-    image: lanaremenyuk/foodgram:latest
+    build:
+      context: ../backend
     restart: always
+    command: >
+      bash -c "python manage.py migrate &&
+      python manage.py collectstatic --noinput &&
+      gunicorn --bind 0:8000 foodgram.wsgi"
     volumes:
       - static_value:/app/static/
       - media_value:/app/media/
     depends_on:
       - db
+    links:
+      - db:db
     env_file:
       - ./.env
 
@@ -35,6 +43,10 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/:/usr/share/nginx/html/api/docs/
+      - static_value:/var/html/static/
+      - media_value:/var/html/media/
+    depends_on:
+      - backend
 
 volumes:
   static_value:
