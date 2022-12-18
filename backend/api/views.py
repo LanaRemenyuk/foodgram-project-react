@@ -1,11 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from api.utils import add_to, delete_from, download_cart
 
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from recipes.models import (Favorite, Follow, Ingredient, Recipe, ShoppingList,
                             Tag)
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.permissions import (AllowAny, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
@@ -96,66 +97,36 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    permission_classes = (IsAuthorAdminOrReadOnly,)
+    serializer_class = RecipeListSerializer
+    http_method_names = ('get', 'post', 'patch', 'delete')
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = PageLimitPagination
+    permission_classes = (IsAuthorAdminOrReadOnly,)
 
     def get_serializer_class(self):
-        if self.action in ('list', 'retrieve'):
+        if self.request.method in permissions.SAFE_METHODS:
             return RecipeListSerializer
         return RecipeCreateSerializer
 
-    @staticmethod
-    def create_object(request, pk, serializers):
-        data = {'user': request.user.id, 'recipe': pk}
-        serializer = serializers(data=data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    @staticmethod
-    def delete_object(request, pk, model):
-        user = request.user
-        recipe = get_object_or_404(Recipe, pk=pk)
-        object = get_object_or_404(model, user=user, recipe=recipe)
-        object.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def _create_or_destroy(self, http_method, recipe, key,
-                           model, serializer):
-        if http_method == 'POST':
-            return self.create_object(request=recipe, pk=key,
-                                      serializers=serializer)
-        return self.delete_object(request=recipe, pk=key, model=model)
-
     @action(
         detail=True,
-        methods=('post', 'delete'),
-        permission_classes=(IsAuthenticated,),
+        methods=['post', 'delete'],
+        permission_classes=[permissions.IsAuthenticated]
     )
     def favorite(self, request, pk):
-        return self._create_or_destroy(
-            request.method, request, pk, Favorite, FavoriteSerializer
-        )
+        if request.method == 'POST':
+            return add_to(self, Favorite, request.user, pk)
+        else:
+            return delete_from(self, Favorite, request.user, pk)
 
     @action(
         detail=True,
-        methods=('post', 'delete'),
-        permission_classes=(IsAuthenticated,),
+        methods=['post', 'delete'],
+        permission_classes=[permissions.IsAuthenticated]
     )
     def shopping_cart(self, request, pk):
-        return self._create_or_destroy(
-            request.method, request, pk, ShoppingList, ShoppingListSerializer
-        )
-
-    @action(
-        detail=False,
-        permission_classes=(IsAuthenticated,),
-    )
-    def download_shopping_cart(self, user):
-        shopping_cart = self.get_shopping_cart(user)
-        filename = 'shopping-list.txt'
-        response = HttpResponse(shopping_cart, content_type='text/plain')
-        response['Content-Disposition'] = f'attachment; filename={filename}'
-        return response
+        if request.method == 'POST':
+            return add_to(self, ShoppingList, request.user, pk)
+        else:
+            return delete_from(self, ShoppingList, request.user, pk)

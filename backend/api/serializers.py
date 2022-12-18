@@ -71,23 +71,8 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'tags', 'author', 'ingredients', 'is_favorited',
-                  'is_in_shopping_cart', 'name', 'image', 'text',
+        fields = ('id', 'tags', 'author', 'ingredients', 'name', 'image', 'text',
                   'cooking_time')
-
-    def get_is_favorited(self, obj):
-        """Метод проверки наличия рецепта в избранном"""
-        user = self.context.get("request").user
-        if user.is_anonymous:
-            return False
-        return Recipe.objects.filter(recipefavorites__user=user, id=obj.id).exists()
-
-    def get_is_in_shopping_cart(self, obj):
-        """Метод проверки наличия рецепта в списке покупок"""
-        user = self.context.get("request").user
-        if user.is_anonymous:
-            return False
-        return Recipe.objects.filter(shoppinglist__user=user, id=obj.id).exists()
 
     def _obj_exists(self, recipe, name_class):
         request = self.context.get('request')
