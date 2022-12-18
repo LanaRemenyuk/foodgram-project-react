@@ -13,7 +13,7 @@ class RecipeFilter(rest_framework.FilterSet):
     is_favorited = django_filters.NumberFilter(
         method='get_is_favorited'
     )
-    is_in_shopping_cart = django_filters.NumberFilter(
+    is_on_shopping_cart = django_filters.NumberFilter(
         method='get_is_shopping_cart'
     )
 
