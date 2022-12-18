@@ -76,10 +76,18 @@ class RecipeSerializer(serializers.ModelSerializer):
                   'cooking_time')
 
     def get_is_favorited(self, obj):
-        return self._obj_exists(obj, Favorite)
+        """Метод проверки наличия рецепта в избранном"""
+        user = self.context.get("request").user
+        if user.is_anonymous:
+            return False
+        return Recipe.objects.filter(recipefavorites__user=user, id=obj.id).exists()
 
     def get_is_in_shopping_cart(self, obj):
-        return self._obj_exists(obj, ShoppingList)
+        """Метод проверки наличия рецепта в списке покупок"""
+        user = self.context.get("request").user
+        if user.is_anonymous:
+            return False
+        return Recipe.objects.filter(shoppinglist__user=user, id=obj.id).exists()
 
     def _obj_exists(self, recipe, name_class):
         request = self.context.get('request')
