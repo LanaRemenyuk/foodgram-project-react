@@ -11,8 +11,7 @@ services:
       - ./.env
 
   backend:
-    build:
-      context: ../backend
+    image: lanaremenyuk/foodgram:latest
     restart: always
     command: >
       bash -c "python manage.py migrate &&
