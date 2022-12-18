@@ -1,12 +1,12 @@
 from django_filters.rest_framework import FilterSet, filters
 
-from recipe.models import Ingredient, Recipe, Tag
+from recipes.models import Ingredient, Recipe, Tag
 
 FILTER_USER = {'favorites': 'favorites__user',
-               'shop_list': 'shop_list__user'}
+               'shopping_cart': 'shopping_cart__user'}
 
 
-class IngredientSearchFilter(FilterSet):
+class IngredientFilter(FilterSet):
     name = filters.CharFilter(lookup_expr='istartswith')
 
     class Meta:
@@ -38,4 +38,4 @@ class RecipeFilter(FilterSet):
         return self._get_queryset(queryset, name, value, 'favorites')
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
-        return self._get_queryset(queryset, name, value, 'shop_list')
+        return self._get_queryset(queryset, name, value, 'shopping_cart')
