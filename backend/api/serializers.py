@@ -71,8 +71,15 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'tags', 'author', 'ingredients', 'name', 'image', 'text',
+        fields = ('id', 'tags', 'author', 'ingredients', 'is_favorited',
+                  'is_in_shopping_cart', 'name', 'image', 'text',
                   'cooking_time')
+
+    def get_is_favorited(self, obj):
+        return self._obj_exists(obj, Favorite)
+
+    def get_is_in_shopping_cart(self, obj):
+        return self._obj_exists(obj, ShoppingList)
 
     def _obj_exists(self, recipe, name_class):
         request = self.context.get('request')

@@ -1,45 +1,41 @@
-from django.contrib.auth import get_user_model
+from django_filters.rest_framework import FilterSet, filters
 
-import django_filters
-from django_filters import rest_framework
-from recipes.models import Ingredient, Recipe, Tag
+from recipe.models import Ingredient, Recipe, Tag
 
-User = get_user_model()
+FILTER_USER = {'favorites': 'favorites__user',
+               'shop_list': 'shop_list__user'}
 
-class RecipeFilter(rest_framework.FilterSet):
-    tags = django_filters.AllValuesMultipleFilter(
-        field_name='tags__slug'
+
+class IngredientSearchFilter(FilterSet):
+    name = filters.CharFilter(lookup_expr='istartswith')
+
+    class Meta:
+        model = Ingredient
+        fields = ('name', )
+
+
+class RecipeFilter(FilterSet):
+    tags = filters.ModelMultipleChoiceFilter(
+        field_name='tags__slug',
+        to_field_name='slug',
+        queryset=Tag.objects.all()
     )
-    is_favorited = django_filters.NumberFilter(
-        method='get_is_favorited'
-    )
-    is_on_shopping_cart = django_filters.NumberFilter(
-        method='get_is_shopping_cart'
+    is_favorited = filters.BooleanFilter(method='filter_is_favorited')
+    is_in_shopping_cart = filters.BooleanFilter(
+        method='filter_is_in_shopping_cart'
     )
 
     class Meta:
         model = Recipe
-        fields = ('is_favorited', 'author', 'tags', 'is_on_shopping_cart', )
+        fields = ('tags', 'author', 'is_favorited', 'is_in_shopping_cart')
 
-    def get_is_favorited(self, queryset, name, value):
-        user = self.request.user
+    def _get_queryset(self, queryset, name, value, model):
         if value:
-            return queryset.filter(recipe_favourite__user_id=user.id)
-        return queryset.all()
+            return queryset.filter(**{FILTER_USER[model]: self.request.user})
+        return queryset
 
-    def get_is_shopping_cart(self, queryset, name, value):
-        user = self.request.user
-        if value:
-            return queryset.filter(recipe_shopping_cart__user_id=user.id)
-        return queryset.all()
+    def filter_is_favorited(self, queryset, name, value):
+        return self._get_queryset(queryset, name, value, 'favorites')
 
-
-class IngredientFilter(rest_framework.FilterSet):
-    name = django_filters.CharFilter(
-        field_name='name',
-        lookup_expr='istartswith'
-    )
-
-    class Meta:
-        model = Ingredient
-        fields = ('name',)
+    def filter_is_in_shopping_cart(self, queryset, name, value):
+        return self._get_queryset(queryset, name, value, 'shop_list')
