@@ -1,4 +1,5 @@
 import csv
+import os
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -11,8 +12,7 @@ class Command(BaseCommand):
 
     def handle(self, **kwargs):
         with open(
-            # f"{settings.BASE_DIR}\\ingredients.csv",
-            f"D:\\foodgram-project-react\\data\\ingredients.csv",
+            os.path.join(settings.BASE_DIR, "ingredients.csv"),
             "r",
             encoding="UTF-8"
         ) as file:
@@ -23,5 +23,5 @@ class Command(BaseCommand):
                     measurement_unit=row[1]
                 )
         self.stdout.write(
-            self.style.SUCCESS("***Ingredients were succesfully loaded***")
+            self.style.SUCCESS("[+]***Ingredients were succesfully loaded***")
         )

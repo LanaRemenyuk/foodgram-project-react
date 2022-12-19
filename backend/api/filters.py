@@ -1,9 +1,8 @@
 from django_filters.rest_framework import FilterSet, filters
-
 from recipes.models import Ingredient, Recipe, Tag
 
 FILTER_USER = {'favorites': 'favorites__user',
-               'shopping_cart': 'shopping_cart__user'}
+               'shop_list': 'shop_list__user'}
 
 
 class IngredientFilter(FilterSet):
@@ -38,4 +37,4 @@ class RecipeFilter(FilterSet):
         return self._get_queryset(queryset, name, value, 'favorites')
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
-        return self._get_queryset(queryset, name, value, 'shopping_cart')
+        return self._get_queryset(queryset, name, value, 'shop_list')

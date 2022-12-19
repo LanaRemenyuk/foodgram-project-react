@@ -1,9 +1,8 @@
 from django.db import transaction
-
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from recipes.models import (Favorite, Follow, Ingredient, IngredientContained,
-                            Recipe, ShoppingList, Tag)
+from recipes.models import (Favorite, Follow, Ingredient,
+                            IngredientContained, Recipe, ShoppingList, Tag)
 from rest_framework import serializers
 from users.models import CustomUser
 
@@ -26,7 +25,8 @@ class CustomUserSerializer(UserSerializer):
 class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta:
         model = CustomUser
-        fields = ('email', 'username', 'first_name', 'last_name', 'password')
+        fields = ('email', 'id', 'username', 'first_name', 'last_name',
+                  'password')
 
     @transaction.atomic
     def create(self, validated_data):
@@ -115,7 +115,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         tags = data['tags']
         if not tags:
             raise serializers.ValidationError({
-                'tags': 'Тэг обязателен!'
+                'tags': 'Тег обязателен для заполнения!'
             })
         tags_set = set()
         for tag in tags:
@@ -150,6 +150,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             })
         return data
 
+    @transaction.atomic
     def add_ingredients(self, ingredients, recipe):
         new_ingredients = [IngredientContained(
             recipe=recipe,

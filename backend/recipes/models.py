@@ -30,11 +30,13 @@ class Tag(models.Model):
                             help_text='Здесь слаг тега',
                             )
 
+    def __str__(self):
+        return f'{self.name}'
+
 
 class Ingredient(models.Model):
     """Модель ингредиента"""
     name = models.CharField(max_length=200,
-                            unique=True,
                             verbose_name='Ингредиент',
                             help_text='Введите ингредиент',
                             error_messages={'unique': 'Такой ингредиент уже существует'})
