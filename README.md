@@ -21,6 +21,7 @@ Python 3.7, Django 2.2.19, Django REST Framework 3.12, PostgresQL
 - Клонируйте репозиторий на Ваш компьютер
 - Создайте и активируйте виртуальное окружение
 ```
+
 python -m venv venv
 
 source venv/Scripts/activate
