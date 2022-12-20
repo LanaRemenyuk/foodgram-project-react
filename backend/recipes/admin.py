@@ -9,7 +9,7 @@ EMPTY_VALUE = '-пусто-'
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     """Представляет модель Tag в интерфейсе администратора."""
-    list_display = ('id', 'name', 'color', 'slug')
+    list_display = ('name', 'color', 'slug')
     search_fields = ('name',)
     list_filter = ('name',)
     empty_value_display = EMPTY_VALUE

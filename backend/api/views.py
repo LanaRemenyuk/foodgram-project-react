@@ -17,8 +17,9 @@ from .paginators import PageLimitPagination
 from .permissions import IsAuthorAdminOrReadOnly
 from .serializers import (CustomUserSerializer, FavoriteSerializer,
                           FollowSerializer, IngredientSerializer,
-                          RecipeCreateSerializer, RecipeListSerializer,
+                          RecipeCreateSerializer, RecipeSerializer,
                           ShoppingListSerializer, TagSerializer)
+from .utils import get_shopping_cart
 
 
 class CustomUserViewSet(UserViewSet):
@@ -103,7 +104,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
-            return RecipeListSerializer
+            return RecipeSerializer
         return RecipeCreateSerializer
 
     @staticmethod
@@ -154,7 +155,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,),
     )
     def download_shopping_cart(self, user):
-        shopping_cart = self.get_shopping_cart(user)
+        shopping_cart =get_shopping_cart(user)
         filename = 'shopping-list.txt'
         response = HttpResponse(shopping_cart, content_type='text/plain')
         response['Content-Disposition'] = f'attachment; filename={filename}'

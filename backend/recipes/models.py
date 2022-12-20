@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from django.db.models import DateTimeField
 from django.db.models.deletion import CASCADE
@@ -18,11 +18,16 @@ class Tag(models.Model):
         help_text='Введите тег',
     )
     color = ColorField(
+        verbose_name='HEX-код',
         format='hex',
         max_length=7,
         unique=True,
-        verbose_name='Цвет тега HEX',
-        help_text='Введите цвет тега в HEX',
+        validators=[
+            RegexValidator(
+                regex="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
+                message='Проверьте вводимый формат',
+            )
+        ],
     )
     slug = models.SlugField(max_length=200,
                             unique=True,
