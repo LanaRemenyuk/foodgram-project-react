@@ -1,3 +1,5 @@
+![foodgram_workflow](https://github.com/LanaRemenyuk/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
+
 # Foodgram
 
 Проект доступен по адресу http://158.160.55.155
