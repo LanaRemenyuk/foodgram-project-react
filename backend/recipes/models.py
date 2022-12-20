@@ -19,7 +19,6 @@ class Tag(models.Model):
     )
     color = ColorField(
         verbose_name='HEX-код',
-        format='hex',
         max_length=7,
         unique=True,
         validators=[

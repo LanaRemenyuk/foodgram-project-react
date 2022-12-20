@@ -230,14 +230,6 @@ class ShoppingListSerializer(RecipeListSerializer):
         model = ShoppingList
         fields = ('user', 'recipe')
 
-    def validate(self, data):
-        user = data['user']
-        if user.shopping_list.filter(recipe=data['recipe']).exists():
-            raise serializers.ValidationError(
-                'Рецепт уже добавлен в корзину'
-            )
-        return data
-
     def to_representation(self, instance):
         return representation(
             self.context,

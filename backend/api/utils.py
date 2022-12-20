@@ -1,11 +1,11 @@
 from collections import Counter
 
-from recipe.models import IngredientContained
+from recipes.models import IngredientContained
 
 
 def get_shopping_cart(user):
     ingredients = IngredientContained.objects.filter(
-        recipe__shop_list__user=user.user
+        recipe__shopping_cart__user=user.user
     )
     compressed_ingredients = Counter()
     for ing in ingredients:
