@@ -62,7 +62,7 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
-    ingredients = IngredientRecipeSerializer(source='ingredient_amounts',
+    ingredients = IngredientRecipeSerializer(source='ingredient_contained',
                                              many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
@@ -150,7 +150,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             })
         return data
 
-    @transaction.atomic
     def add_ingredients(self, ingredients, recipe):
         new_ingredients = [IngredientContained(
             recipe=recipe,
@@ -163,7 +162,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         for tag in tags:
             recipe.tags.add(tag)
 
-    @transaction.atomic
     def create(self, validated_data):
         author = self.context.get('request').user
         tags = validated_data.pop('tags')
@@ -176,7 +174,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         return representation(self.context, instance, RecipeSerializer)
 
-    @transaction.atomic
     def update(self, recipe, validated_data):
         recipe.tags.clear()
         IngredientContained.objects.filter(recipe=recipe).delete()

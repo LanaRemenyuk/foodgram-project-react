@@ -18,15 +18,10 @@ class Tag(models.Model):
         help_text='Введите тег',
     )
     color = ColorField(
-        verbose_name='HEX-код',
         max_length=7,
         unique=True,
-        validators=[
-            RegexValidator(
-                regex="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
-                message='Проверьте вводимый формат',
-            )
-        ],
+        verbose_name='Цвет тега',
+        help_text='Здесь цвет тега',
     )
     slug = models.SlugField(max_length=200,
                             unique=True,
@@ -43,7 +38,7 @@ class Ingredient(models.Model):
     name = models.CharField(max_length=200,
                             verbose_name='Ингредиент',
                             help_text='Введите ингредиент',
-                            error_messages={'unique': 'Такой ингредиент уже существует'})
+                            )
     measurement_unit = models.CharField(max_length=200,
                                         verbose_name='Единица измерения',
                                         help_text='Введите единицу измерения',)
