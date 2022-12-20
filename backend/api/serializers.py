@@ -162,6 +162,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         for tag in tags:
             recipe.tags.add(tag)
 
+    @transaction.atomic
     def create(self, validated_data):
         author = self.context.get('request').user
         tags = validated_data.pop('tags')
@@ -174,6 +175,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         return representation(self.context, instance, RecipeSerializer)
 
+    @transaction.atomic
     def update(self, recipe, validated_data):
         recipe.tags.clear()
         IngredientContained.objects.filter(recipe=recipe).delete()
