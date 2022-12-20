@@ -1,7 +1,7 @@
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
-from pathlib import Path
 
 load_dotenv()
 
@@ -74,8 +74,8 @@ DATABASES = {
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
         'HOST': os.getenv('DB_HOST', default='localhost'),
         'PORT': os.getenv('DB_PORT', default='5432')
-        }
     }
+}
 
 AUTH_USER_MODEL = 'users.CustomUser'
 

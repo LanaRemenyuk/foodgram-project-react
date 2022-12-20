@@ -87,8 +87,8 @@ class Recipe(models.Model):
         verbose_name='Теги',
         help_text='Здесь теги',)
     cooking_time = models.IntegerField(validators=[MinValueValidator(
-            1, 'Количество должно превышать 0',
-        )],
+        1, 'Количество должно превышать 0',
+    )],
         verbose_name='Время приготовления',
         help_text='Укажите время приготовления',)
 
