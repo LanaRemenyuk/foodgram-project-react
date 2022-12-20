@@ -3,7 +3,8 @@
 # Foodgram
 
 Проект доступен по адресу http://158.160.34.252
-Доступы от admin:
+
+Доступы от admin http://158.160.34.252/admin/:
 - lan2828@yandex.ru
 - cut12cut123
 
