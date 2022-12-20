@@ -29,7 +29,8 @@ services:
       - ./.env
 
   frontend:
-    image: lanaremenyuk/foodgram_frontend:latest
+    build:
+      context: ../frontend
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
