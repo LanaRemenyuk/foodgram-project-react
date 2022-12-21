@@ -2,7 +2,7 @@ from django_filters.rest_framework import FilterSet, filters
 from recipes.models import Ingredient, Recipe, Tag
 
 FILTER_USER = {'favorites': 'favorites__user',
-               'shopping_cart_list': 'shopping_cart_list__user'}
+               'shopping_cart': 'shopping_cart__user'}
 
 
 class IngredientFilter(FilterSet):
