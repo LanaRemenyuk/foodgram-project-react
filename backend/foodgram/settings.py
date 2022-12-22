@@ -15,7 +15,8 @@ DEBUG = False
 ALLOWED_HOSTS = ['127.0.0.1',
                  'localhost',
                  'backend',
-                 '158.160.34.252', ]
+                 '158.160.34.252',
+                 'http://thisisfoodgram.hopto.org']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
