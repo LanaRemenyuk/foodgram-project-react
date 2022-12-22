@@ -180,15 +180,6 @@ class ShoppingList(models.Model):
     class Meta:
         verbose_name = 'Покупка'
         verbose_name_plural = 'Покупки'
-        ordering = ['-id']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'recipe'], name='unique_shoppingList'
-            )
-        ]
-
-    def __str__(self):
-        return f'{self.user} {self.recipe}'
 
 
 class Follow(models.Model):
