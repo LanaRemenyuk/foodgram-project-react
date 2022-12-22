@@ -1,7 +1,7 @@
 
 # Foodgram
 
-Проект доступен по адресу http://158.160.34.252
+Проект доступен по адресу http://thisisfoodgram.hopto.org
 
 Доступы от admin http://158.160.34.252/admin/:
 - lan2828@yandex.ru
